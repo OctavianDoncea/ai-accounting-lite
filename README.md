@@ -1,0 +1,1 @@
+# AI-Native Accounting Lite
