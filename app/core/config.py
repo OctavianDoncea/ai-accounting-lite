@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings  # type: ignore[import]
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     SUPABASE_URL: str
