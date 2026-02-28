@@ -5,6 +5,9 @@ from app.core.database import Base
 import uuid
 from datetime import datetime, timezone
 
+def _utc_now_naive():
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
 class AccountModel(Base):
     __tablename__ = 'accounts'
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -13,8 +16,8 @@ class AccountModel(Base):
     type = Column(Enum('asset', 'liability', 'equity', 'revenue', 'expense', name='account_type', native_enum=False), nullable=False)
     description = Column(Text)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=_utc_now_naive)
+    updated_at = Column(DateTime, default=_utc_now_naive, onupdate=_utc_now_naive)
 
     def to_domain(self):
         from app.modules.ledger.domain.entities import Account, AccountType
@@ -50,7 +53,7 @@ class JournalEntryModel(Base):
     description = Column(Text)
     status = Column(Enum('draft', 'posted', 'void', name='entry_status', native_enum=False), default='draft')
     created_by = Column(String(100))
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=_utc_now_naive)
     posted_at = Column(DateTime, nullable=False)
 
     lines = relationship('JournalLineModel', back_populates='entry', cascade='all, delete-orphan')
